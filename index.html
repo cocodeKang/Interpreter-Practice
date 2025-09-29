@@ -1,78 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Language Interpretation Exam Video Learning</title>
+  <title>영상 테스트 사이트</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; text-align: center; }
     video { width: 100%; max-width: 720px; border-radius: 8px; background: #000; }
     .controls { margin-top: 1rem; }
+    input { width: 80%; padding: 0.5rem; margin-bottom: 1rem; }
     button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0 0.5rem; border-radius: 4px; border: none; cursor: pointer; }
-    #answer { margin-top: 1rem; font-size: 1.25rem; color: #0a74da; display: none; }
   </style>
 </head>
 <body>
-  <h1>Sign Language Interpretation Practical Exam Video Learning</h1>
-  <video id="videoPlayer" autoplay loop>
+  <h1>영상 테스트 사이트</h1>
+
+  <!-- 영상 주소 입력창 -->
+  <input type="text" id="videoUrl" placeholder="영상 주소를 입력하세요" 
+    value="https://drive.google.com/uc?id=12HnY1WMwl1sEpJkoCcwyDB94gFcvOr_e&export=download">
+  <button id="loadBtn">영상 불러오기</button>
+
+  <!-- 영상 플레이어 -->
+  <video id="videoPlayer" controls autoplay loop>
     <source src="" type="video/mp4">
-    Your browser does not support the video tag.
+    브라우저가 video 태그를 지원하지 않습니다.
   </video>
-  <div class="controls">
-    <button id="prevBtn">Previous</button>
-    <button id="showAnswerBtn">Show Answer</button>
-    <button id="nextBtn">Next</button>
-  </div>
-  <div id="answer"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Add your actual video filenames and answers here
-      const videos = [
-        { src: '디지털_국민 모두가 디지털 혜택을 누릴 수 있도록 디지털 역량 강화 및 디지털 환경을 정비하는 _디지털 포용 추진계획_이 지난 6월 22일 발표됐습니다..mp4.mp4', answer: '디지털_국민 모두가 디지털 혜택을 누릴 수 있도록 디지털 역량 강화 및 디지털 환경을 정비하는 _디지털 포용 추진계획_이 지난 6월 22일 발표됐습니다.' },
-        { src: 'video2.mp4', answer: 'Answer phrase 2' },
-        { src: 'video3.mp4', answer: 'Answer phrase 3' }
-        // ... add more videos
-      ];
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoUrlInput = document.getElementById('videoUrl');
+    const loadBtn = document.getElementById('loadBtn');
 
-      // Fisher–Yates shuffle
-      function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-      shuffle(videos);
+    function loadVideo(url) {
+      videoPlayer.src = url;
+      videoPlayer.load();
+      videoPlayer.play();
+    }
 
-      let currentIndex = 0;
-      const videoPlayer = document.getElementById('videoPlayer');
-      const answerDiv = document.getElementById('answer');
+    // 버튼 클릭 시 입력된 주소로 영상 로드
+    loadBtn.addEventListener('click', () => {
+      const url = videoUrlInput.value.trim();
+      if(url) loadVideo(url);
+    });
 
-      function loadVideo(index) {
-        const { src, answer } = videos[index];
-        videoPlayer.src = src;
-        answerDiv.textContent = answer;
-        answerDiv.style.display = 'none';
-        videoPlayer.load();
-        videoPlayer.play();
-      }
-
-      document.getElementById('prevBtn').addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + videos.length) % videos.length;
-        loadVideo(currentIndex);
-      });
-
-      document.getElementById('nextBtn').addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % videos.length;
-        loadVideo(currentIndex);
-      });
-
-      document.getElementById('showAnswerBtn').addEventListener('click', () => {
-        answerDiv.style.display = 'block';
-      });
-
-      // Load first video
-      loadVideo(currentIndex);
+    // 페이지 로드 시 기본값 영상 재생
+    window.addEventListener('DOMContentLoaded', () => {
+      loadVideo(videoUrlInput.value);
     });
   </script>
 </body>
