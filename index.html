@@ -5,20 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>영상 테스트 사이트</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; text-align: center; }
-    video { width: 100%; max-width: 720px; border-radius: 8px; background: #000; }
-    .controls { margin-top: 1rem; }
-    input { width: 80%; padding: 0.5rem; margin-bottom: 1rem; }
-    button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0 0.5rem; border-radius: 4px; border: none; cursor: pointer; }
+    body { font-family: sans-serif; padding: 20px; max-width: 900px; margin: auto; text-align: center; }
+    video { width: 100%; max-width: 720px; border-radius: 8px; background: #000; margin-top: 1rem; }
+    input { width: 70%; padding: 0.5rem; margin-top: 1rem; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; margin: 0.5rem; border-radius: 4px; border: none; cursor: pointer; }
+    ul { list-style: none; padding: 0; margin-top: 1rem; }
+    li { padding: 0.5rem; margin: 0.3rem 0; background: #f0f0f0; border-radius: 6px; cursor: pointer; word-break: break-all; }
+    li:hover { background: #d8eafd; }
   </style>
 </head>
 <body>
   <h1>영상 테스트 사이트</h1>
 
-  <!-- 영상 주소 입력창 -->
-  <input type="text" id="videoUrl" placeholder="영상 주소를 입력하세요" 
-    value="https://drive.google.com/uc?id=12HnY1WMwl1sEpJkoCcwyDB94gFcvOr_e&export=download">
-  <button id="loadBtn">영상 불러오기</button>
+  <!-- 주소 입력창 -->
+  <input type="text" id="videoUrl" placeholder="영상 주소를 입력하세요">
+  <button id="addBtn">추가</button>
+
+  <!-- 주소 목록 -->
+  <h2>영상 목록</h2>
+  <ul id="videoList"></ul>
 
   <!-- 영상 플레이어 -->
   <video id="videoPlayer" controls autoplay loop>
@@ -29,23 +34,47 @@
   <script>
     const videoPlayer = document.getElementById('videoPlayer');
     const videoUrlInput = document.getElementById('videoUrl');
-    const loadBtn = document.getElementById('loadBtn');
+    const addBtn = document.getElementById('addBtn');
+    const videoList = document.getElementById('videoList');
 
+    // 샘플 주소 기본값
+    const videos = [
+      "https://drive.google.com/uc?id=12HnY1WMwl1sEpJkoCcwyDB94gFcvOr_e&export=download",
+      "https://drive.google.com/open?id=12HnY1WMwl1sEpJkoCcwyDB94gFcvOr_e&usp=drive_copy"
+    ];
+
+    // 영상 로드
     function loadVideo(url) {
       videoPlayer.src = url;
       videoPlayer.load();
       videoPlayer.play();
     }
 
-    // 버튼 클릭 시 입력된 주소로 영상 로드
-    loadBtn.addEventListener('click', () => {
+    // 목록 갱신
+    function renderList() {
+      videoList.innerHTML = '';
+      videos.forEach((url, index) => {
+        const li = document.createElement('li');
+        li.textContent = url;
+        li.addEventListener('click', () => loadVideo(url));
+        videoList.appendChild(li);
+      });
+    }
+
+    // 새 주소 추가
+    addBtn.addEventListener('click', () => {
       const url = videoUrlInput.value.trim();
-      if(url) loadVideo(url);
+      if (url) {
+        videos.push(url);
+        renderList();
+        videoUrlInput.value = '';
+      }
     });
 
-    // 페이지 로드 시 기본값 영상 재생
+    // 첫 실행 시 목록 렌더링 및 첫 영상 재생
     window.addEventListener('DOMContentLoaded', () => {
-      loadVideo(videoUrlInput.value);
+      renderList();
+      if (videos.length > 0) loadVideo(videos[0]);
     });
   </script>
 </body>
